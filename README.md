@@ -1,1 +1,1 @@
-Adaptive Metric Learning code project
+Adaptive Metric Dimensionality Reduction code project
