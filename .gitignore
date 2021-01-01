@@ -1,5 +1,8 @@
 # Dan additions
-data/
+HierarchyFinder.py
+LPSolving.py
+main.py
+linprogMatlab.m
 
 
 # Created by .ignore support plugin (hsz.mobi)
