@@ -17,3 +17,7 @@ def calc_euclidean_distances(arr: np.ndarray) -> np.ndarray:
         for j in range(n):
             res[i, j] = np.linalg.norm(arr[i] - arr[j])
     return res
+
+
+def get_min_non_zero(x: np.ndarray) -> float:
+    return np.min(x[x.nonzero()])

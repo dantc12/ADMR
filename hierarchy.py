@@ -1,6 +1,6 @@
 import logging
 from copy import copy
-from typing import List, Any
+from typing import List
 
 import numpy as np
 
@@ -14,8 +14,6 @@ class Hierarchy:
     c: float  # covering property
 
     def __init__(self, S: List, distances: np.ndarray, c: float):
-        # if len(S.shape) != 1:
-        #     raise Exception("Need a 1D list of points for S.")
         if len(distances.shape) != 2:
             raise Exception("Need a 2D list of distances.")
         self.S = S
