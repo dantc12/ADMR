@@ -9,12 +9,12 @@ logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%H:%M:%S', leve
 logging.info('Entered debug mode.')
 
 S = [(1, 1), (1, -1), (2, 1), (3, 0), (4, 1), (0, -2), (-1, -1)]
-distances = arr_scaler(calc_euclidean_distances(np.array(S)))
-delta = get_min_non_zero(distances)
+distances = calc_euclidean_distances(np.array(S))
+delta = get_min_non_zero(distances) / np.max(distances)
 t = int(np.ceil(np.log2(1 / delta)))
 
 logging.info('Points:\n{}'.format(str(S)))
-logging.info('Scaled distances:\n{}'.format(str(distances)))
+logging.info('Distances:\n{}'.format(str(distances)))
 logging.info('Minimal distance (delta): {}'.format(str(delta)))
 logging.info('t: {}'.format(str(t)))
 # print(str(arr_scaler(distances)))
