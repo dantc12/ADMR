@@ -21,3 +21,7 @@ def calc_euclidean_distances(arr: np.ndarray) -> np.ndarray:
 
 def get_min_non_zero(x: np.ndarray) -> float:
     return np.min(x[x.nonzero()])
+
+
+def get_min_interpoint_dist(distances: np.ndarray) -> float:
+    return get_min_non_zero(distances) / np.max(distances)

@@ -3,14 +3,14 @@ import logging
 import numpy as np
 
 from hierarchy import Hierarchy
-from utils import calc_euclidean_distances, arr_scaler, get_min_non_zero
+import utils
 
 logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%H:%M:%S', level=logging.INFO)
 logging.info('Entered debug mode.')
 
 S = [(1, 1), (1, -1), (2, 1), (3, 0), (4, 1), (0, -2), (-1, -1)]
-distances = calc_euclidean_distances(np.array(S))
-delta = get_min_non_zero(distances) / np.max(distances)
+distances = utils.calc_euclidean_distances(np.array(S))
+delta = utils.get_min_interpoint_dist(distances)
 t = int(np.ceil(np.log2(1 / delta)))
 
 logging.info('Points:\n{}'.format(str(S)))
