@@ -4,8 +4,7 @@ from typing import List
 
 import numpy as np
 
-from utils import arr_scaler
-
+import utils
 
 class Hierarchy:
     S: List  # 1-dimensional list
@@ -17,7 +16,7 @@ class Hierarchy:
         if len(distances.shape) != 2:
             raise Exception("Need a 2D list of distances.")
         self.S = S
-        self.scaled_distances = arr_scaler(distances)
+        self.scaled_distances = utils.arr_scaler(distances)
         self.c = c
         self._build_hierarchy()
 
@@ -29,7 +28,7 @@ class Hierarchy:
             except Exception:
                 logging.info('Failed {}\'th try at building hierarchy, got {}'.format(str(i + 1), str(self)))
                 self.hierarchy = []
-        if len(self.hierarchy) == 0:  # Couldn't build any hierarchies
+        if len(self) == 0:  # Couldn't build any hierarchies
             logging.info("Failed to create a hierarchy.")
         else:
             logging.info("Created hierarchy successfully: {}".format(str(self)))
@@ -59,6 +58,9 @@ class Hierarchy:
     def __str__(self):
         return str(self.hierarchy)
         # return str([[self.S[p_i] for p_i in lvl] for lvl in self.hierarchy])
+
+    def __len__(self):
+        return len(self.hierarchy)
 
     def get_points_hier(self) -> List:
         return [[self.S[p_i] for p_i in lvl] for lvl in self.hierarchy]
