@@ -11,7 +11,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%H:%M:%S', leve
 logging.info('Entered debug mode.')
 
 
-def run(S: List[Tuple], c: float = 1, d: int = 1):
+def run(S: List, c: float = 1, d: int = 1):
     distances = utils.calc_euclidean_distances(np.array(S))
     delta = utils.get_min_interpoint_dist(distances)
     t = int(np.ceil(np.log2(1 / delta)))
