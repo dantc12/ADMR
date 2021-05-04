@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
 import numpy as np
-from pulp import LpMaximize, LpProblem, LpStatus, lpSum, LpVariable, LpMinimize
+from pulp import LpProblem, lpSum, LpVariable, LpMinimize
 
 from hierarchy import Hierarchy
 
@@ -48,7 +48,7 @@ class LinearProgram:
         # Initialize the decision variables
         self.c = []
         for i in range(self.n):
-            self.c[i] = LpVariable(name=f"c_{i}", lowBound=0)
+            self.c.append(LpVariable(name=f"c_{i}", lowBound=0))
 
         self.z = []
         for i in range(self.t + 1):
@@ -63,39 +63,43 @@ class LinearProgram:
         # constraint (10)
         for i in range(self.t):
             for j in range(len(self.z[i])):
-                self.model += (self.z[i][j] >= self.z[i+1][j], f"constraint (10)_i={i}_j={j}")
+                self.model += (self.z[i][j] <= self.z[i+1][j], f"constraint (10)_i{i}_j{j}")
 
         # constraint (11)
         for alpha in ALPHAS:
             for j in range(self.n):
                 for i in range(self.t + 1):
                     self.model += (lpSum([self.z[k][l] for (k, l) in self._N_i_j(alpha, i, j)]) <= (2 * alpha) ** d_tag,
-                                   f"constraint (11)_alpha={alpha}_j={j}_i={i}")
+                                   f"constraint (11)_alpha{alpha}_j{j}_i{i}")
 
         # constraint (12)
         for j in range(len(self.z[self.t])):
             for i in range(self.t + 1):
                 self.model += (lpSum([self.z[k][l] for (k, l) in self._N_i_j(7, i, j)]) >= self.z[self.t][j],
-                               f"constraint (12)_j={j}_i={i}")
+                               f"constraint (12)_j{j}_i{i}")
 
         # constraint (13)
         for j in range(self.n):
             for k in range(self.t + 1):
                 for i in range(k):
                     self.model += (lpSum([self.z[l][r] for (l, r) in self._N_i_j(24, i, j)]) >= (1 / (2 * 24) ** d_tag) * lpSum([self.z[l][r] for (l, r) in self._N_i_j(24, k, j)]),
-                                   f"constraint (13)_j={j}_k={k}_i={i}")
+                                   f"constraint (13)_j{j}_k{k}_i{i}")
 
         # constraint (15)
         for j in range(self.n):
             # LpVariable doesn't seem to support `/` operator, so I multiplied ineq by delta
-            self.model += (self.delta * self.z[self.t][j] + self.c[j] >= self.delta, f"constraint (15)_j={j}")
+            self.model += (self.delta * self.z[self.t][j] + self.c[j] >= self.delta, f"constraint (15)_j{j}")
 
         # constraint (16)
         for j in range(self.n):
             for i in range(self.t + 1):
                 self.model += ((2 ** -i) * self.z[self.t][j] + self.c[j] + self.delta * lpSum([self.z[k][l] for (k, l) in self._N_i_j(12, i, j)]) >= self.delta,
-                               f"constraint (16)_j={j}_i={i}")
+                               f"constraint (16)_j{j}_i{i}")
 
+        # objective
+        self.model += lpSum(self.c)
+
+        print(self.model)
         # Solve the problem
         status = self.model.solve()
 
