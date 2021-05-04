@@ -51,5 +51,7 @@ def run(S: List[Tuple], c: float = 1, d: int = 1):
     print(f"W hierarchy: {w_hierarchy}")
     print(f"Recall S: {S}")
     print(f"W: {W}")
+    if W == S:
+        print("(W == S)")
 
     return W
