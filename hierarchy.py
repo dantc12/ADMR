@@ -6,18 +6,21 @@ import numpy as np
 
 import utils
 
+
 class Hierarchy:
     S: List  # 1-dimensional list
     scaled_distances: np.ndarray  # 2-dimensional list of distances
     hierarchy: List[List[int]]  # list of lists, the hierarchy
     c: float  # covering property
+    t: int  # maximal size of hierarchy
 
-    def __init__(self, S: List, distances: np.ndarray, c: float):
+    def __init__(self, S: List, distances: np.ndarray, c: float, t: int):
         if len(distances.shape) != 2:
             raise Exception("Need a 2D list of distances.")
         self.S = S
         self.scaled_distances = utils.arr_scaler(distances)
         self.c = c
+        self.t = t
         self._build_hierarchy()
 
     def _build_hierarchy(self):
@@ -26,12 +29,15 @@ class Hierarchy:
                 self._build_hierarchy_starting_at(i)
                 break
             except Exception:
-                logging.info('Failed {}\'th try at building hierarchy, got {}'.format(str(i + 1), str(self)))
+                logging.info('Failed {}\'th try at building hierarchy, got length {}'.format(str(i + 1), len(self)))
                 self.hierarchy = []
         if len(self) == 0:  # Couldn't build any hierarchies
-            logging.info("Failed to create a hierarchy.")
+            raise Exception("Failed to create a hierarchy.")
         else:
             logging.info("Created hierarchy successfully: {}".format(str(self)))
+
+    def _recursive_build_hierarchy_starting_at(self, h: List, point_i: int):
+        pass
 
     def _build_hierarchy_starting_at(self, point_i: int):
         self.hierarchy = []
@@ -51,7 +57,7 @@ class Hierarchy:
                         and self._get_min_distance_from(p_index, self.hierarchy[i]) > 2 ** -i:
                     self.hierarchy[i].append(p_index)
                     _ = p_index_options.pop(p_index_options.index(p_index))
-            if len(self.hierarchy[i]) == len(self.hierarchy[i-1]):  # Didn't find anything to add to hierarchy
+            if i == self.t and len(p_index_options) > 0:
                 raise Exception("Failed to create a hierarchy, got this far: {}".format(str(self.hierarchy)))
             i += 1
 

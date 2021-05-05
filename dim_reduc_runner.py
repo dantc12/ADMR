@@ -23,7 +23,7 @@ def run(S: List, c: float = 1, d: int = 1):
     # print(str(arr_scaler(distances)))
 
     logging.info('Building hierarchy.')
-    h = Hierarchy(S, distances, c)
+    h = Hierarchy(S, distances, c, t)
     logging.info('Done.')
 
     logging.info('Building LP.')
