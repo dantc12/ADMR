@@ -23,5 +23,10 @@ def get_min_non_zero(x: np.ndarray) -> float:
     return np.min(x[x.nonzero()])
 
 
-def get_min_interpoint_dist(distances: np.ndarray) -> float:
+def get_delta(distances: np.ndarray) -> float:
+    """
+    Gets NON-SCALED distances and returns a SCALED (normalized) minimal interpoint distance
+    :param distances: non-scaled distances between points
+    :return: a scaled minimal interpoint distance
+    """
     return get_min_non_zero(distances) / np.max(distances)

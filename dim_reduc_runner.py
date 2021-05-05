@@ -13,7 +13,7 @@ logging.info('Entered debug mode.')
 
 def run(S: List, c: float = 1, d: int = 1):
     distances = utils.calc_euclidean_distances(np.array(S))
-    delta = utils.get_min_interpoint_dist(distances)
+    delta = utils.get_delta(distances)
     t = int(np.ceil(np.log2(1 / delta)))
 
     logging.info('Points:\n{}'.format(str(S)))
