@@ -1,10 +1,11 @@
 from typing import List, Tuple
 
 import numpy as np
-from pulp import LpProblem, lpSum, LpVariable, LpMinimize
+from pulp import LpProblem, lpSum, LpVariable, LpMinimize, LpStatus
 
 from hierarchy import Hierarchy
 
+SAVE_FILES_PATH = 'lps/'
 ALPHAS = [7, 24, 75, 588, 612]
 # Max values in calculator:
 # 7^118
@@ -19,6 +20,7 @@ class LinearProgram:
     d: int
     delta: float
     scaled_distances: np.ndarray
+    save_file_path: str
 
     n: int
     t: int
@@ -30,10 +32,13 @@ class LinearProgram:
     def __init__(self,
                  h: Hierarchy,
                  d: int,
-                 delta: float):
+                 delta: float,
+                 save_file_name: str):
         self.h = h
         self.d = d
         self.delta = delta
+        self.save_file_path = SAVE_FILES_PATH + save_file_name + '.lp'
+
         self.scaled_distances = h.scaled_distances
 
         self._initialize_vars()
@@ -103,7 +108,21 @@ class LinearProgram:
         # Solve the problem
         status = self.model.solve()
 
-    def _N_i_j(self, alpha: int, i: int, j: int) -> List[Tuple[int, int]]:
+        self.model.writeLP(self.save_file_path)
+
+        with open(self.save_file_path, 'a') as f:
+            f.write('Solution:\n')
+            f.write(f"status: {self.model.status}, {LpStatus[self.model.status]}\n")
+            f.write(f"objective value: {self.model.objective.value()}\n")
+            f.write('\n')
+            for name, constraint in self.model.constraints.items():
+                f.write(f"{name}: {constraint.value()}\n")
+            f.write('\n')
+            for var in self.model.variables():
+                if var.value() != 0:
+                    f.write(f"{var.name}: {var.value()}\n")
+
+    def _N_i_j(self, alpha: int, i: int, j: int) -> List[LpVariable]:
         res_z = []
 
         if j in self.h.hierarchy[i]:

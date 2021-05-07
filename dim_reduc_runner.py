@@ -11,7 +11,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%H:%M:%S', leve
 logging.info('Entered debug mode.')
 
 
-def run(S: List, c: float = 1, d: int = 1):
+def run(S: List, save_file_name: str, c: float = 1, d: int = 1):
     distances = utils.calc_euclidean_distances(np.array(S))
     delta = utils.get_delta(distances)
     t = int(np.ceil(np.log2(1 / delta)))
@@ -27,14 +27,11 @@ def run(S: List, c: float = 1, d: int = 1):
     logging.info('Done.')
 
     logging.info('Building LP.')
-    lp = LinearProgram(h, d, delta)
+    lp = LinearProgram(h, d, delta, save_file_name)
     logging.info('Done.')
 
     logging.info('Solving.')
     lp.solve()
-    print(f"status: {lp.model.status}, {LpStatus[lp.model.status]}")
-    for var in lp.model.variables():
-        print(f"{var.name}: {var.value()}")
     logging.info('Done.')
 
     w_hierarchy = []
