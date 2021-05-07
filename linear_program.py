@@ -62,7 +62,7 @@ class LinearProgram:
                 self.z[i].append(LpVariable(name=f"z_i{i}_j{j}", lowBound=0, upBound=1))
 
     def solve(self):
-        d_tag = 4 * self.d - 1
+        d_tag = 4 * self.d + 1
 
         # Add the constraints to the model
         # constraint (10)
