@@ -74,20 +74,20 @@ class LinearProgram:
         for alpha in ALPHAS:
             for j in range(self.n):
                 for i in range(self.t + 1):
-                    self.model += (lpSum([self.z[k][l] for (k, l) in self._N_i_j(alpha, i, j)]) <= (2 * alpha) ** d_tag,
+                    self.model += (lpSum(self._N_i_j(alpha, i, j)) <= (2 * alpha) ** d_tag,
                                    f"constraint_(11)_alpha{alpha}_j{j}_i{i}")
 
         # constraint (12)
         for j in range(len(self.z[self.t])):
             for i in range(self.t + 1):
-                self.model += (lpSum([self.z[k][l] for (k, l) in self._N_i_j(7, i, j)]) >= self.z[self.t][j],
+                self.model += (lpSum(self._N_i_j(7, i, j)) >= self.z[self.t][j],
                                f"constraint_(12)_j{j}_i{i}")
 
         # constraint (13)
         for j in range(self.n):
             for k in range(self.t + 1):
                 for i in range(k):
-                    self.model += (lpSum([self.z[l][r] for (l, r) in self._N_i_j(24, i, j)]) >= (1 / (2 * 24) ** d_tag) * lpSum([self.z[l][r] for (l, r) in self._N_i_j(24, k, j)]),
+                    self.model += (lpSum(self._N_i_j(24, i, j)) >= (1 / (2 * 24) ** d_tag) * lpSum(self._N_i_j(24, k, j)),
                                    f"constraint_(13)_j{j}_k{k}_i{i}")
 
         # constraint (15)
@@ -98,7 +98,7 @@ class LinearProgram:
         # constraint (16)
         for j in range(self.n):
             for i in range(self.t + 1):
-                self.model += ((2 ** -i) * self.z[self.t][j] + self.c[j] + self.delta * lpSum([self.z[k][l] for (k, l) in self._N_i_j(12, i, j)]) >= self.delta,
+                self.model += ((2 ** -i) * self.z[self.t][j] + self.c[j] + self.delta * lpSum(self._N_i_j(12, i, j)) >= self.delta,
                                f"constraint_(16)_j{j}_i{i}")
 
         # objective
@@ -133,9 +133,9 @@ class LinearProgram:
                 if self.scaled_distances[j, r] < self.scaled_distances[j, center]:
                     center = r
 
-        for k in range(len(self.z[i])):
+        for k, z_ik in enumerate(self.z[i]):
             if self.scaled_distances[center, k] <= alpha * (2 ** -i):
-                res_z.append((i, k))
+                res_z.append(z_ik)
 
         return res_z
 
