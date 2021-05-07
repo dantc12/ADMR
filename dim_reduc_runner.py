@@ -1,5 +1,5 @@
 import logging
-from typing import List, Tuple
+from typing import List
 import numpy as np
 from pulp import LpStatus
 
@@ -36,12 +36,15 @@ def run(S: List, save_file_name: str, c: float = 1, d: int = 1):
 
     w_hierarchy = []
     for var in [var for var in lp.model.variables() if var.name.startswith('z')]:
-        i = int(var.name[2])
-        j = int(var.name[3])
+        split = var.name.split('_')
+        i = int(split[1][1:])
+        j = int(split[2][1:])
         if var.value() == 1:
-            if len(w_hierarchy) == i:
+            while len(w_hierarchy) <= i:
                 w_hierarchy.append([])
             w_hierarchy[i].append(j)
+
+    w_hierarchy = [sorted(w) for w in w_hierarchy]
 
     W = [S[w] for w in w_hierarchy[-1]]
 

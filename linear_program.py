@@ -48,18 +48,18 @@ class LinearProgram:
         self.t = len(self.h.hierarchy) - 1
 
         # Create the model
-        self.model = LpProblem(name="linear program", sense=LpMinimize)
+        self.model = LpProblem(name="linear_program", sense=LpMinimize)
 
         # Initialize the decision variables
         self.c = []
         for i in range(self.n):
-            self.c.append(LpVariable(name=f"c_{i}", lowBound=0))
+            self.c.append(LpVariable(name=f"c_i{i}", lowBound=0))
 
         self.z = []
         for i in range(self.t + 1):
             self.z.append([])
             for j in range(len(self.h.hierarchy[i])):
-                self.z[i].append(LpVariable(name=f"z_{i}{j}", lowBound=0, upBound=1))
+                self.z[i].append(LpVariable(name=f"z_i{i}_j{j}", lowBound=0, upBound=1))
 
     def solve(self):
         d_tag = 4 * self.d - 1
@@ -68,27 +68,27 @@ class LinearProgram:
         # constraint (10)
         for i in range(self.t):
             for j in range(len(self.z[i])):
-                self.model += (self.z[i][j] <= self.z[i+1][j], f"constraint (10)_i{i}_j{j}")
+                self.model += (self.z[i][j] <= self.z[i+1][j], f"constraint_(10)_i{i}_j{j}")
 
         # constraint (11)
         for alpha in ALPHAS:
             for j in range(self.n):
                 for i in range(self.t + 1):
                     self.model += (lpSum([self.z[k][l] for (k, l) in self._N_i_j(alpha, i, j)]) <= (2 * alpha) ** d_tag,
-                                   f"constraint (11)_alpha{alpha}_j{j}_i{i}")
+                                   f"constraint_(11)_alpha{alpha}_j{j}_i{i}")
 
         # constraint (12)
         for j in range(len(self.z[self.t])):
             for i in range(self.t + 1):
                 self.model += (lpSum([self.z[k][l] for (k, l) in self._N_i_j(7, i, j)]) >= self.z[self.t][j],
-                               f"constraint (12)_j{j}_i{i}")
+                               f"constraint_(12)_j{j}_i{i}")
 
         # constraint (13)
         for j in range(self.n):
             for k in range(self.t + 1):
                 for i in range(k):
                     self.model += (lpSum([self.z[l][r] for (l, r) in self._N_i_j(24, i, j)]) >= (1 / (2 * 24) ** d_tag) * lpSum([self.z[l][r] for (l, r) in self._N_i_j(24, k, j)]),
-                                   f"constraint (13)_j{j}_k{k}_i{i}")
+                                   f"constraint_(13)_j{j}_k{k}_i{i}")
 
         # constraint (15)
         for j in range(self.n):
@@ -99,7 +99,7 @@ class LinearProgram:
         for j in range(self.n):
             for i in range(self.t + 1):
                 self.model += ((2 ** -i) * self.z[self.t][j] + self.c[j] + self.delta * lpSum([self.z[k][l] for (k, l) in self._N_i_j(12, i, j)]) >= self.delta,
-                               f"constraint (16)_j{j}_i{i}")
+                               f"constraint_(16)_j{j}_i{i}")
 
         # objective
         self.model += lpSum(self.c)
