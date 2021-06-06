@@ -29,7 +29,7 @@ class Hierarchy:
                 self._build_hierarchy_starting_at(i)
                 break
             except Exception:
-                logging.info('Failed {}\'th try at building hierarchy, got length {}'.format(str(i + 1), len(self)))
+                logging.info(f"Failed {str(i + 1)}'th try at building hierarchy, got length {len(self)}")
                 self.hierarchy = []
         if len(self) == 0:  # Couldn't build any hierarchies
             raise Exception("Failed to create a hierarchy.")
@@ -58,7 +58,7 @@ class Hierarchy:
                     self.hierarchy[i].append(p_index)
                     _ = p_index_options.pop(p_index_options.index(p_index))
             if i == self.t and len(p_index_options) > 0:
-                raise Exception("Failed to create a hierarchy, got this far: {}".format(str(self.hierarchy)))
+                raise Exception(f"Failed to create a hierarchy, got this far: {str(self.hierarchy)}")
             i += 1
 
     def __str__(self):

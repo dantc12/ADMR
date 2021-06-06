@@ -1,7 +1,8 @@
 # Dan additions
 not_mine/
 lps/
-tests.py
+run_logs/
+test_runs.py
 
 
 # Created by .ignore support plugin (hsz.mobi)

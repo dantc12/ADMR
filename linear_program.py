@@ -39,11 +39,10 @@ class LinearProgram:
         self.delta = delta
         self.save_file_path = SAVE_FILES_PATH + save_file_name + '.lp'
 
-        self.scaled_distances = h.scaled_distances
-
         self._initialize_vars()
 
     def _initialize_vars(self):
+        self.scaled_distances = self.h.scaled_distances
         self.n = len(self.h.S)
         self.t = len(self.h.hierarchy) - 1
 
